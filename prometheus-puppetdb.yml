@@ -1,0 +1,30 @@
+- job_name: puppetdb
+  metrics_path: /metrics
+  scheme: http
+  file_sd_configs:
+  - files:
+    - /etc/prometheus-puppetdb/targets.yml
+    refresh_interval: 5m
+  relabel_configs:
+  - source_labels: [metrics_path]
+    separator: ;
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [scheme]
+    separator: ;
+    regex: (.+)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [certname]
+    separator: ;
+    regex: (.+?)\.(.+)
+    target_label: instance
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: ^metrics_path$|^scheme$
+    replacement: $1
+    action: labeldrop
