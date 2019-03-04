@@ -29,3 +29,9 @@ scrape_configs:
     regex: ^metrics_path$|^scheme$
     replacement: $1
     action: labeldrop
+  - source_labels: [certname]
+    separator: ;
+    regex: (.+?)\.(.+)
+    target_label: host
+    replacement: ${1}
+    action: replace
